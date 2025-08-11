@@ -1,0 +1,151 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.bak
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# Build outputs
+dist/
+build/
+out/
+*.min.js
+*.min.css
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+.coverage
+*.cover
+test-results/
+
+# Logs
+logs/
+*.log
+log.txt
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+tmp/
+temp/
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+
+# Documentation build
+docs-build/
+_site/
+.docusaurus/
+
+# Debugging
+.vscode/launch.json
+.vscode/settings.json
+debug/
+
+# Private/Sensitive files
+*.key
+*.pem
+*.p12
+*.pfx
+credentials.json
+secrets.json
+config.local.js
+
+# Analytics and monitoring
+*.har
+lighthouse-report.html
+
+# Package manager specific
+.npm/
+.yarn/
+.pnp.*
+.yarn-integrity
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Backup files
+*.backup
+*.bk
+backup/
+
+# Local development
+local/
+.local/
+*.local.*
+
+# Session data (PA SDK specific)
+pa_session_*
+pa_customer_*
+.pa-cache/
+
+# Test data
+test-data/
+fixtures/
+__tests__/
+*.test.js
+*.spec.js
+
+# Generated files
+*.generated.*
+auto-generated/
+CLAUDE.md

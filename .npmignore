@@ -1,0 +1,35 @@
+# Don't include these in the NPM package
+.git/
+.gitignore
+.env
+.env.*
+node_modules/
+*.log
+coverage/
+test/
+tests/
+spec/
+*.test.js
+*.spec.js
+.nyc_output/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Development files
+nodemon.json
+.eslintrc*
+.prettierrc*
+
+# Documentation build files
+docs-build/
+_site/
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+
+# Keep only essential files for the package
+# The 'files' array in package.json controls what gets published

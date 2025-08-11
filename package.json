@@ -1,0 +1,62 @@
+{
+  "name": "@particularaudience/sdk",
+  "version": "0.1.0-alpha.1",
+  "description": "JavaScript SDK for Particular Audience API integration",
+  "main": "pa-sdk.js",
+  "module": "pa-sdk.js",
+  "types": "types/index.d.ts",
+  "files": [
+    "pa-sdk.js",
+    "types/",
+    "README.md",
+    "backend-proxy-example.js"
+  ],
+  "scripts": {
+    "start": "node backend-proxy-example.js",
+    "dev": "nodemon backend-proxy-example.js",
+    "build": "echo 'No build step required'",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "echo 'Alpha version - not ready for production'"
+  },
+  "keywords": [
+    "particular-audience",
+    "personalization",
+    "recommendations",
+    "ecommerce",
+    "sdk",
+    "javascript",
+    "frontend",
+    "analytics",
+    "tracking"
+  ],
+  "author": "Particular Audience",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Particular-Audience/javascript-sdk.git"
+  },
+  "homepage": "https://github.com/Particular-Audience/javascript-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/Particular-Audience/javascript-sdk/issues"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "node-cache": "^5.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
