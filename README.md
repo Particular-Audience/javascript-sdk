@@ -587,7 +587,7 @@ See `example.html` for a complete working example with:
 
 ## License
 
-[Your License]
+MIT License - see [LICENSE](LICENSE) file for details
 
 ## Support
 
