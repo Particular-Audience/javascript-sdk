@@ -1,6 +1,6 @@
 # Particular Audience JavaScript SDK
 
-A comprehensive JavaScript SDK for integrating Particular Audience's personalization and recommendation services into your website.
+A comprehensive JavaScript SDK for integrating Particular Audience's personalization, retail media and recommendation system services into your website.
 
 ## Features
 
@@ -419,6 +419,27 @@ const paSDK = new ParticularAudience({
 | **Works offline** | ✅ Yes | ✅ Yes |
 
 **Recommendation**: Use `'cookie'` (default) unless you have specific privacy requirements or cookie restrictions.
+
+### About First-Party vs Third-Party Cookies
+
+The Particular Audience SDK exclusively uses **first-party cookies** when storage type is set to `'cookie'`. Understanding the difference is important for privacy compliance and functionality:
+
+**First-Party (1P) Cookies** (used by PA SDK):
+- Set by the same domain the user is visiting
+- Persist across page reloads and sessions on the same domain
+- Generally accepted by browsers and privacy settings
+- Not blocked by most ad blockers or privacy tools
+- Compliant with privacy regulations when properly disclosed
+- Support cross-subdomain sharing (e.g., `www.example.com` and `shop.example.com`)
+
+**Third-Party (3P) Cookies** (NOT used by PA SDK):
+- Set by domains different from the one being visited
+- Often used for cross-site tracking and advertising
+- Increasingly blocked by browsers (Safari ITP, Chrome Privacy Sandbox)
+- Subject to stricter privacy regulations
+- May be blocked by ad blockers and privacy tools
+
+The PA SDK's use of first-party cookies ensures better reliability, privacy compliance, and browser compatibility compared to third-party tracking solutions.
 
 ### Attribution Data Storage
 
