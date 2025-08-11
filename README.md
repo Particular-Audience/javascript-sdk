@@ -474,8 +474,10 @@ See PA Docs: [Best Practices](https://docs.particularaudience.com/recommendation
 1. **Click Event Storage**: When you track a click event, the SDK automatically stores attribution data for that product
 2. **Automatic Retrieval**: Add to cart, checkout, and purchase events automatically include stored attribution data
 3. **Separate Tracking**: Sponsored and organic clicks are tracked separately for proper attribution
-4. **Attribution Window**: Data is stored for 30 days by default (configurable)
-5. **Cross-Session Persistence**: Attribution data persists across browser sessions using cookies or localStorage
+4. **Priority Handling**: Sponsored attribution is used first; organic attribution is only used if no sponsored data exists
+5. **Attribution Window**: Data is stored for 30 days by default (configurable)
+6. **Cross-Session Persistence**: Attribution data persists across browser sessions using cookies or localStorage
+7. **Automatic Cleanup**: Stored attribution is cleared once the window expires or after it has been used for a purchase
 
 ### Configuration:
 
@@ -514,6 +516,10 @@ await paSDK.trackPurchase({
   // Attribution data is automatically merged for each product
 });
 ```
+
+Once a purchase is tracked, the SDK discards the stored sponsored or organic
+attribution used for the products involved, ensuring new clicks are required
+for future purchases.
 
 ### Manual Attribution (if needed):
 

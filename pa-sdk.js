@@ -332,20 +332,38 @@
      * @see https://docs.particularaudience.com/events/event-purchases - Purchase Event API
      */
     async trackPurchase(eventData) {
+      const products = [];
+      const consumedAttribution = [];
+
+      eventData.products.forEach(product => {
+        const { product: enrichedProduct, attributionData } = this._prepareProductWithAttribution(product);
+        products.push(enrichedProduct);
+        if (attributionData) {
+          consumedAttribution.push({ refId: product.refId, isSponsored: attributionData.isSponsored });
+        }
+      });
+
       const event = {
         currentUrl: eventData.currentUrl || window.location.href,
         eventTime: new Date().toISOString(),
         orderId: eventData.orderId,
         paymentMethod: eventData.paymentMethod,
         currencyCode: eventData.currencyCode,
-        products: eventData.products.map(product => this._enrichProductDataWithAttribution(product)),
+        products,
         priceBeatPromotions: eventData.priceBeatPromotions,
         recommenderId: eventData.recommenderId,
         campaignId: eventData.campaignId,
         tacticId: eventData.tacticId
       };
 
-      return this._queueEvent('purchases', event);
+      const queuedEvent = this._queueEvent('purchases', event);
+
+      // Remove consumed attribution data so future purchases require new clicks
+      consumedAttribution.forEach(item => {
+        this._cleanupExpiredAttributionData(item.refId, item.isSponsored);
+      });
+
+      return queuedEvent;
     }
 
     /**
@@ -771,18 +789,28 @@
     }
 
     /**
+     * Prepare product data and return any attribution used
+     * @private
+     */
+    _prepareProductWithAttribution(product) {
+      const attributionData = this._getAttributionData(product.refId);
+      const baseProduct = this._enrichProductData(product);
+      const productWithAttr = attributionData ?
+        this._mergeAttributionData(baseProduct, attributionData) :
+        baseProduct;
+
+      return {
+        product: productWithAttr,
+        attributionData
+      };
+    }
+
+    /**
      * Enrich product data with attribution tracking fields
      * @private
      */
     _enrichProductDataWithAttribution(product) {
-      const attributionData = this._getAttributionData(product.refId);
-      const baseProduct = this._enrichProductData(product);
-      
-      if (attributionData) {
-        return this._mergeAttributionData(baseProduct, attributionData);
-      }
-      
-      return baseProduct;
+      return this._prepareProductWithAttribution(product).product;
     }
 
     /**
@@ -920,7 +948,9 @@
         return;
       }
 
-      const storageKey = `${this.config.cookiePrefix}attribution_${this.session.customerId}_${productRefId}`;
+      const typeSuffix = clickData.isSponsored ? 's' : 'o';
+      const storageKey = `${this.config.cookiePrefix}attribution_${this.session.customerId}_${productRefId}_${typeSuffix}`;
+      const mapKey = `${productRefId}_${typeSuffix}`;
       const attributionData = {
         clickId: clickData.clickId,
         eventTime: clickData.eventTime,
@@ -956,7 +986,7 @@
 
       try {
         // Store in memory cache for current session
-        this.attributionData.set(productRefId, attributionData);
+        this.attributionData.set(mapKey, attributionData);
 
         // Store persistently
         if (this.config.storageType === 'localStorage' && typeof localStorage !== 'undefined') {
@@ -973,27 +1003,25 @@
     }
 
     /**
-     * Get stored attribution data for a product
+     * Get stored attribution data of a specific type
      * @private
      */
-    _getAttributionData(productRefId) {
-      if (!this.session.customerId || !productRefId) {
-        return null;
-      }
+    _getAttributionDataFor(productRefId, isSponsored) {
+      const typeSuffix = isSponsored ? 's' : 'o';
+      const mapKey = `${productRefId}_${typeSuffix}`;
+      const storageKey = `${this.config.cookiePrefix}attribution_${this.session.customerId}_${productRefId}_${typeSuffix}`;
 
       // First check memory cache
-      if (this.attributionData.has(productRefId)) {
-        const data = this.attributionData.get(productRefId);
+      if (this.attributionData.has(mapKey)) {
+        const data = this.attributionData.get(mapKey);
         if (data.expiresAt > Date.now()) {
           return data;
         } else {
-          this.attributionData.delete(productRefId);
+          this.attributionData.delete(mapKey);
         }
       }
 
       // Then check persistent storage
-      const storageKey = `${this.config.cookiePrefix}attribution_${this.session.customerId}_${productRefId}`;
-      
       try {
         let storedData;
         if (this.config.storageType === 'localStorage' && typeof localStorage !== 'undefined') {
@@ -1004,15 +1032,12 @@
 
         if (storedData) {
           const attributionData = JSON.parse(storedData);
-          
-          // Check if data has expired
+
           if (attributionData.expiresAt > Date.now()) {
-            // Add to memory cache for faster access
-            this.attributionData.set(productRefId, attributionData);
+            this.attributionData.set(mapKey, attributionData);
             return attributionData;
           } else {
-            // Clean up expired data
-            this._cleanupExpiredAttributionData(productRefId);
+            this._cleanupExpiredAttributionData(productRefId, isSponsored);
           }
         }
       } catch (error) {
@@ -1020,6 +1045,24 @@
       }
 
       return null;
+    }
+
+    /**
+    * Get stored attribution data for a product
+    * prioritising sponsored clicks
+    * @private
+    */
+    _getAttributionData(productRefId) {
+      if (!this.session.customerId || !productRefId) {
+        return null;
+      }
+      // Always prefer sponsored attribution when both types are available
+      const sponsored = this._getAttributionDataFor(productRefId, true);
+      if (sponsored) {
+        return sponsored;
+      }
+
+      return this._getAttributionDataFor(productRefId, false);
     }
 
     /**
@@ -1058,28 +1101,33 @@
     }
 
     /**
-     * Clean up expired attribution data
+     * Clean up attribution data
      * @private
      */
-    _cleanupExpiredAttributionData(productRefId) {
+    _cleanupExpiredAttributionData(productRefId, isSponsored = null) {
       if (!this.session.customerId) return;
-      
-      const storageKey = `${this.config.cookiePrefix}attribution_${this.session.customerId}_${productRefId}`;
-      
-      // Remove from memory
-      this.attributionData.delete(productRefId);
-      
-      // Remove from persistent storage
-      try {
-        if (this.config.storageType === 'localStorage' && typeof localStorage !== 'undefined') {
-          localStorage.removeItem(storageKey);
-        } else {
-          // Set cookie with past expiration date to delete it
-          this._setCookie(storageKey, '', 'Thu, 01 Jan 1970 00:00:00 UTC');
+
+      const types = isSponsored === null ? [true, false] : [isSponsored];
+
+      types.forEach(type => {
+        const suffix = type ? 's' : 'o';
+        const mapKey = `${productRefId}_${suffix}`;
+        const storageKey = `${this.config.cookiePrefix}attribution_${this.session.customerId}_${productRefId}_${suffix}`;
+
+        // Remove from memory
+        this.attributionData.delete(mapKey);
+
+        // Remove from persistent storage
+        try {
+          if (this.config.storageType === 'localStorage' && typeof localStorage !== 'undefined') {
+            localStorage.removeItem(storageKey);
+          } else {
+            this._setCookie(storageKey, '', 'Thu, 01 Jan 1970 00:00:00 UTC');
+          }
+        } catch (error) {
+          this._error('Failed to cleanup expired attribution data:', error);
         }
-      } catch (error) {
-        this._error('Failed to cleanup expired attribution data:', error);
-      }
+      });
     }
   }
 
