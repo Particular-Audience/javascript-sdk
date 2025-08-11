@@ -1048,17 +1048,21 @@
     }
 
     /**
-     * Get stored attribution data for a product
-     * prioritising sponsored clicks
-     * @private
-     */
+    * Get stored attribution data for a product
+    * prioritising sponsored clicks
+    * @private
+    */
     _getAttributionData(productRefId) {
       if (!this.session.customerId || !productRefId) {
         return null;
       }
+      // Always prefer sponsored attribution when both types are available
+      const sponsored = this._getAttributionDataFor(productRefId, true);
+      if (sponsored) {
+        return sponsored;
+      }
 
-      return this._getAttributionDataFor(productRefId, true) ||
-             this._getAttributionDataFor(productRefId, false);
+      return this._getAttributionDataFor(productRefId, false);
     }
 
     /**
