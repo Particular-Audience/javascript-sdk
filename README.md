@@ -1,6 +1,6 @@
 # Particular Audience JavaScript SDK
 
-A comprehensive JavaScript SDK for integrating Particular Audience's personalization, retail media and recommendation system services into your website.
+A comprehensive JavaScript SDK for integrating Particular Audience's personalization, retail media, and recommendation system services into your website.
 
 ## Features
 
