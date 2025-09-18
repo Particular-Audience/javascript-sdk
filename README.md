@@ -34,10 +34,10 @@ npm install github:Particular-Audience/javascript-sdk#v0.1.0-alpha.1
 
 ```javascript
 // ES6 modules
-import ParticularAudience from 'javascript-sdk';
+import ParticularAudience from '@particularaudience/javascript-sdk';
 
 // CommonJS
-const ParticularAudience = require('javascript-sdk');
+const ParticularAudience = require('@particularaudience/javascript-sdk');
 ```
 
 ### Via Script Tag (Direct from GitHub)

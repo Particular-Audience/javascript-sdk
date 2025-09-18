@@ -1,5 +1,5 @@
 {
-  "name": "@particularaudience/sdk",
+  "name": "@particularaudience/javascript-sdk",
   "version": "0.1.0-alpha.1",
   "description": "JavaScript SDK for Particular Audience API integration",
   "main": "pa-sdk.js",
