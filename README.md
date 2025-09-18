@@ -22,31 +22,33 @@ For complete API documentation and guides, visit:
 
 ## Installation
 
-### Via NPM
+### Via NPM (from GitHub)
 
 ```bash
-npm install @particularaudience/sdk
+# Install latest from main branch
+npm install github:Particular-Audience/javascript-sdk
+
+# Install specific release version
+npm install github:Particular-Audience/javascript-sdk#v0.1.0-alpha.1
 ```
 
 ```javascript
 // ES6 modules
-import ParticularAudience from '@particularaudience/sdk';
+import ParticularAudience from 'javascript-sdk';
 
 // CommonJS
-const ParticularAudience = require('@particularaudience/sdk');
+const ParticularAudience = require('javascript-sdk');
 ```
 
-### Via Script Tag
+### Via Script Tag (Direct from GitHub)
 
 ```html
-<script src="https://unpkg.com/@particularaudience/sdk@latest/pa-sdk.js"></script>
+<!-- Load from GitHub Pages -->
+<script src="https://particular-audience.github.io/javascript-sdk/pa-sdk.js"></script>
 <!-- SDK will be available as global ParticularAudience -->
-```
 
-### Via CDN (JSDelivr)
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/@particularaudience/sdk@latest/pa-sdk.js"></script>
+<!-- Or load from specific release -->
+<script src="https://github.com/Particular-Audience/javascript-sdk/releases/download/v0.1.0-alpha.1/pa-sdk.js"></script>
 ```
 
 ## Quick Start
